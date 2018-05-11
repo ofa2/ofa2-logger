@@ -1,8 +1,5 @@
 import _ from 'lodash';
 import pino from 'pino';
-import als from 'async-local-storage';
-
-als.enable();
 
 export default function lift() {
   this.config.log = this.config.log || {};
@@ -24,23 +21,25 @@ export default function lift() {
 
   logger.log = logger.info.bind(logger);
 
-  ['log', 'info', 'warn', 'error', 'trace'].forEach((key) => {
-    let originFn = logger[key].bind(logger);
-    logger[key] = function wrap(...args) {
-      let traceId = als.get('traceId');
-      if (!traceId) {
-        originFn(...args);
-      }
-      else if (args[0] instanceof Error) {
-        originFn(...[...args, als.get('traceId')]);
-      }
-      else {
-        originFn(...[als.get('traceId'), ...args]);
-      }
-    };
-  });
+  // enable als, use traceId
+  if (global.als) {
+    ['log', 'info', 'warn', 'error', 'trace'].forEach((key) => {
+      let originFn = logger[key].bind(logger);
+      logger[key] = function wrap(...args) {
+        let traceId = global.als.get('traceId');
+        if (!traceId) {
+          originFn(...args);
+        }
+        else if (args[0] instanceof Error) {
+          originFn(...[...args, global.als.get('traceId')]);
+        }
+        else {
+          originFn(...[global.als.get('traceId'), ...args]);
+        }
+      };
+    });
+  }
 
   global.logger = logger;
-  global.als = als;
   return logger;
 }

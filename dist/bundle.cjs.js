@@ -4,9 +4,7 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 
 var _ = _interopDefault(require('lodash'));
 var pino = _interopDefault(require('pino'));
-var als = _interopDefault(require('async-local-storage'));
 
-als.enable();
 function lift() {
   this.config.log = this.config.log || {};
   let pretty;
@@ -22,24 +20,27 @@ function lift() {
 
   let logger = pino(this.config.log, pretty);
   this.logger = logger;
-  logger.log = logger.info.bind(logger);
-  ['log', 'info', 'warn', 'error', 'trace'].forEach(key => {
-    let originFn = logger[key].bind(logger);
+  logger.log = logger.info.bind(logger); // enable als, use traceId
 
-    logger[key] = function wrap(...args) {
-      let traceId = als.get('traceId');
+  if (global.als) {
+    ['log', 'info', 'warn', 'error', 'trace'].forEach(key => {
+      let originFn = logger[key].bind(logger);
 
-      if (!traceId) {
-        originFn(...args);
-      } else if (args[0] instanceof Error) {
-        originFn(...[...args, als.get('traceId')]);
-      } else {
-        originFn(...[als.get('traceId'), ...args]);
-      }
-    };
-  });
+      logger[key] = function wrap(...args) {
+        let traceId = global.als.get('traceId');
+
+        if (!traceId) {
+          originFn(...args);
+        } else if (args[0] instanceof Error) {
+          originFn(...[...args, global.als.get('traceId')]);
+        } else {
+          originFn(...[global.als.get('traceId'), ...args]);
+        }
+      };
+    });
+  }
+
   global.logger = logger;
-  global.als = als;
   return logger;
 }
 

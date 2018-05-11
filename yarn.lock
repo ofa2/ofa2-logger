@@ -616,13 +616,6 @@ arrify@^1.0.0:
   version "1.0.1"
   resolved "https://registry.npmjs.org/arrify/-/arrify-1.0.1.tgz#898508da2226f380df904728456849c1501a4b0d"
 
-async-local-storage@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.npmjs.org/async-local-storage/-/async-local-storage-1.2.0.tgz#c8c4a56b32e9626dcc111c7a1b0a5a4be92bc17d"
-  dependencies:
-    debug "^2.6.8"
-    nano-seconds "^1.1.0"
-
 babel-code-frame@^6.22.0:
   version "6.26.0"
   resolved "https://registry.npmjs.org/babel-code-frame/-/babel-code-frame-6.26.0.tgz#63fd43f7dc1e3bb7ce35947db8fe369a3f58c74b"
@@ -1431,10 +1424,6 @@ ms@2.0.0:
 mute-stream@0.0.7:
   version "0.0.7"
   resolved "https://registry.npmjs.org/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
-
-nano-seconds@^1.1.0:
-  version "1.2.2"
-  resolved "https://registry.npmjs.org/nano-seconds/-/nano-seconds-1.2.2.tgz#e8d89971547a57083201ca121543aeeafeab4b02"
 
 natural-compare@^1.4.0:
   version "1.4.0"

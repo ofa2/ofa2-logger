@@ -19,7 +19,6 @@
     "rollup-plugin-node-resolve": "^3.3.0"
   },
   "dependencies": {
-    "async-local-storage": "^1.2.0",
     "lodash": "^4.17.10",
     "pino": "^4.16.1"
   }
