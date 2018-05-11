@@ -9,14 +9,13 @@ export default function lift() {
   let pretty;
 
   if (this.config.log.pretty !== false) {
-    pretty = pino.pretty();
     let prettyConfig = _.assign(
       {
         errorProps: ['extra'],
       },
       this.config.log.pretty
     );
-    pino.pretty(prettyConfig);
+    pretty = pino.pretty(prettyConfig);
     pretty.pipe(process.stdout);
   }
 

@@ -1,2 +1,43 @@
-import _ from"lodash";import pino from"pino";import als from"async-local-storage";function lift(){let o;if(this.config.log=this.config.log||{},!1!==this.config.log.pretty){o=pino.pretty();let t=_.assign({errorProps:["extra"]},this.config.log.pretty);pino.pretty(t),o.pipe(process.stdout)}let t=pino(this.config.log,o);return this.logger=t,t.log=t.info.bind(t),["log","info","warn","error","trace"].forEach(o=>{let r=t[o].bind(t);t[o]=function(...o){als.get("traceId")?o[0]instanceof Error?r(...[...o,als.get("traceId")]):r(...[als.get("traceId"),...o]):r(...o)}}),global.logger=t,global.als=als,t}als.enable();export default lift;
+import _ from 'lodash';
+import pino from 'pino';
+import als from 'async-local-storage';
+
+als.enable();
+function lift() {
+  this.config.log = this.config.log || {};
+  let pretty;
+
+  if (this.config.log.pretty !== false) {
+    let prettyConfig = _.assign({
+      errorProps: ['extra']
+    }, this.config.log.pretty);
+
+    pretty = pino.pretty(prettyConfig);
+    pretty.pipe(process.stdout);
+  }
+
+  let logger = pino(this.config.log, pretty);
+  this.logger = logger;
+  logger.log = logger.info.bind(logger);
+  ['log', 'info', 'warn', 'error', 'trace'].forEach(key => {
+    let originFn = logger[key].bind(logger);
+
+    logger[key] = function wrap(...args) {
+      let traceId = als.get('traceId');
+
+      if (!traceId) {
+        originFn(...args);
+      } else if (args[0] instanceof Error) {
+        originFn(...[...args, als.get('traceId')]);
+      } else {
+        originFn(...[als.get('traceId'), ...args]);
+      }
+    };
+  });
+  global.logger = logger;
+  global.als = als;
+  return logger;
+}
+
+export default lift;
 //# sourceMappingURL=bundle.esm.js.map
