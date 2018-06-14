@@ -8,7 +8,7 @@ export default function lift() {
   if (this.config.log.pretty !== false) {
     let prettyConfig = _.assign(
       {
-        errorProps: ['extra'],
+        errorProps: ['extra', 'seneca'],
       },
       this.config.log.pretty
     );
