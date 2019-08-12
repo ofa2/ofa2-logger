@@ -23,7 +23,7 @@ function lift() {
   logger.log = logger.info.bind(logger); // enable als, use traceId
 
   if (global.als) {
-    ['log', 'info', 'warn', 'error', 'trace'].forEach(key => {
+    ['log', 'info', 'debug', 'warn', 'error', 'trace'].forEach(key => {
       let originFn = logger[key].bind(logger);
 
       logger[key] = function wrap(...args) {
